@@ -23,16 +23,26 @@ public class ServicioUsuarios implements IServicioUsuarios
 	@Autowired
 	private IUsuarioDao usuarioDao;
 
+	
+	private String capitalize (String cadena)
+	{
+		return cadena.substring(0, 1).toUpperCase()+ cadena.substring(1).toLowerCase();
+	}
+	
+	
 	@Override
 	@Transactional
 	public String guardar(Usuario usuario) 
 	{
-		usuario.setCorreo(usuario.getCorreo().toUpperCase());		
+		
 		if (!existeCorreo(usuario))
 		{
 			try
 			{
+				usuario.setCorreo(usuario.getCorreo().toUpperCase());		
 				usuario.setFechaCreacion(LocalDateTime.now());
+				usuario.setNombre(capitalize(usuario.getNombre()));
+				
 				Usuario usuarioGuardado = usuarioDao.save(usuario);
 				
 				if (usuarioGuardado == null)
@@ -363,6 +373,55 @@ public class ServicioUsuarios implements IServicioUsuarios
 			respuesta.setRespuesta("No se encontró el usuario: " + e);
 			return new ResponseEntity <RespuestaUsuarios> (respuesta, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		
+		
+		return new ResponseEntity<RespuestaUsuarios> (respuesta, HttpStatus.OK);
+	}
+
+
+	@Override
+	public ResponseEntity<RespuestaUsuarios> formatearUsuarioPorId(long id) 
+	{
+		
+		RespuestaUsuarios respuesta = new RespuestaUsuarios();
+		List <Usuario> lista = new ArrayList<>();
+		 
+		
+		try
+		{
+						
+			RespuestaUsuarios objetoRespuestaObtenido = buscarUnUsuarioPorId(id).getBody();
+			
+			if (objetoRespuestaObtenido.getUsuarios() != null)
+			{
+				
+				Usuario usuarioAFormatear = objetoRespuestaObtenido.getUsuarios().get(0);
+				
+				usuarioAFormatear.setNombre(capitalize(usuarioAFormatear.getNombre()));				
+				usuarioAFormatear.setContrasenya(usuarioAFormatear.getContrasenya());				
+				usuarioAFormatear.setCorreo(usuarioAFormatear.getCorreo().toUpperCase());					
+				usuarioAFormatear.setFechaCreacion(usuarioAFormatear.getFechaCreacion());				
+				usuarioAFormatear.setEsAdmin(usuarioAFormatear.isEsAdmin());			
+				
+				
+				lista.add(usuarioAFormatear);
+				respuesta.setRespuesta("Usuario formateado correctamente.");
+				respuesta.setUsuarios(lista);
+			}
+			else
+			{
+				respuesta.setRespuesta("Usuario inexistente");
+				return new ResponseEntity <RespuestaUsuarios> (respuesta, HttpStatus.BAD_REQUEST);
+			}
+			
+			
+		}
+		catch (Exception e)
+		{
+			respuesta.setRespuesta("Error al buscar el usuario: " + e);
+			return new ResponseEntity <RespuestaUsuarios> (respuesta, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
 		
 		
 		return new ResponseEntity<RespuestaUsuarios> (respuesta, HttpStatus.OK);

@@ -50,5 +50,7 @@ public interface IServicioUsuarios
 	public ResponseEntity <RespuestaUsuarios> hacerDeshacerAdmin (long id);
 	
 	public ResponseEntity<RespuestaUsuarios> usuarioPorCorreo (String correo);
+	
+	public ResponseEntity<RespuestaUsuarios> formatearUsuarioPorId (long id);
 
 }

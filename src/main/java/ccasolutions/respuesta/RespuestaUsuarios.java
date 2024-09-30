@@ -1,5 +1,6 @@
 package ccasolutions.respuesta;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ccasolutions.modelos.Usuario;
@@ -7,7 +8,7 @@ import ccasolutions.modelos.Usuario;
 public class RespuestaUsuarios 
 {
 	private String respuesta;
-	private List <Usuario> usuarios;
+	private List <Usuario> usuarios = new ArrayList<>();;
 	
 	
 	public String getRespuesta() 

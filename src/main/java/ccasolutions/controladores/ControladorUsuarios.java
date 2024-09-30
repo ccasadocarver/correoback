@@ -108,6 +108,12 @@ public class ControladorUsuarios
 		return servicioUsuarios.usuarioPorCorreo(correo);
 	}
 	
+	@PutMapping("/usuariosformatear/{id}")
+	public ResponseEntity<RespuestaUsuarios> formatearUsuarioPorId(@PathVariable("id") Long id)
+	{
+		return servicioUsuarios.formatearUsuarioPorId(id);
+	}
+	
 	
 	
 	
